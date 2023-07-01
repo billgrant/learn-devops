@@ -1062,3 +1062,4 @@ export default {
 </style>
 ```
 
+## All Done. The code here is the completed tutorial. Not sure if I will use this app in my final product but at this was interesting.
