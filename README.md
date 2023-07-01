@@ -46,3 +46,156 @@ export default {
 
 Moving onto the next step. This entire Vue app build will be a carbon copy of the tutorial linked above. This will hopefully get interesting later when I attempt to build the API.
 
+I create a file called `ToDoItem.vue` under `web-application/moz-todo-vue/src/components` with the following contents
+
+```vue
+<template>
+    <div>
+        <input type="checkbox" id="id" v-bind:checked="isDone" />
+        <label for="id">{{ label }}</label>
+    </div>
+</template>
+<script>
+import uniqueId from "lodash/uniqueId";
+
+export default {
+  props: {
+    label: { required: true, type: String },
+    done: { default: false, type: Boolean },
+  },
+  data() {
+    return {
+      isDone: this.done,
+      id: uniqueId("todo-"),
+    };
+  },
+};
+
+</script>
+```
+
+This is what the `App.vue` file looks like now.
+
+```vue
+
+  <template>
+    <div id="app">
+      <h1>To-Do-List</h1>
+      <ul>
+        <li>
+          <to-do-item label="My ToDo Item" :done="true"></to-do-item>
+        </li>
+      </ul>
+    </div>
+  </template>
+
+<script>
+
+import ToDoItem from "./components/ToDoItem.vue";
+
+export default {
+  name: 'App',
+  components: {
+    ToDoItem
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+At this point. We have a ToDo list app that we can add multiple list items to. Each item will have a unique id and and can be
+set to checked or uncheck when the application starts.
+
+## Rendering a list of Vue components
+
+Instead of single component we now have a list of components that app loops through. They each have a unique id.
+
+`App.vue`
+
+```vue
+
+  <template>
+    <div id="app">
+      <h1>To-Do-List</h1>
+      <ul>
+        <li v-for="item in ToDoItems" :key="item.id">
+          <to-do-item 
+            v-bind:label="item.label" 
+            :done="item.done"
+            :id="item.id"></to-do-item>
+        </li>
+      </ul>
+    </div>
+  </template>
+
+<script>
+
+import ToDoItem from "./components/ToDoItem.vue";
+import uniqueId from "lodash/uniqueId";
+
+export default {
+  name: 'App',
+  components: {
+    ToDoItem
+  },
+  data() {
+    return {
+      ToDoItems: [
+        { id: uniqueId("todo-"), label: "Learn Vue", done: false },
+        { id: uniqueId("todo-"), label: "Create a Vue project with the CLI", done: true },
+        { id: uniqueId("todo-"), label: "Have fun", done: true },
+        { id: uniqueId("todo-"), label: "Create a to-do list", done: false },
+      ],
+    };
+   },
+};
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
+```
+
+`ToDoItem.vue`
+
+```vue
+<template>
+    <div>
+        <input type="checkbox" id="id" v-bind:checked="isDone" />
+        <label for="id">{{ label }}</label>
+    </div>
+</template>
+<script>
+
+export default {
+  props: {
+    label: { required: true, type: String },
+    done: { default: false, type: Boolean },
+    id: { required: true, type: String },
+  },
+  data() {
+    return {
+      isDone: this.done,
+    };
+  },
+};
+
+</script>
+```
